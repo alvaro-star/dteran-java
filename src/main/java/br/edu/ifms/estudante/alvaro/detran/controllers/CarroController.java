@@ -1,39 +1,34 @@
 package br.edu.ifms.estudante.alvaro.detran.controllers;
 
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.ifms.estudante.alvaro.detran.models.Carro;
-import br.edu.ifms.estudante.alvaro.detran.repositorys.Carros;
+import br.edu.ifms.estudante.alvaro.detran.models.CarroModel;
+import br.edu.ifms.estudante.alvaro.detran.repositories.CarroRepository;
 
-@Controller
+@RestController
+@RequestMapping("/carros")
 public class CarroController {
 	@Autowired
-	private Carros carros;
+	private CarroRepository carroRepository;
 	
-	@GetMapping("/carro/carros")
-	public ModelAndView listar() {
-		ModelAndView modelAndView = new ModelAndView("carro/ListaCarros");
-		modelAndView.addObject("carros", carros.findAll());
-		return modelAndView;
+	@GetMapping
+	@RolesAllowed({"ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT"})
+	public List<CarroModel> listar() {
+		return carroRepository.findAll();
 	}
 	
-	@PostMapping("/carro/carros")
-	public String salvar(Carro carro) {
-		this.carros.save(carro);
-		return "redirect:/carro/carros";
+	@PostMapping
+	@RolesAllowed("ROLE_ADMIN")
+	public CarroModel salvar(CarroModel carro) {
+		return carroRepository.save(carro);
 	}
-	
-	@RequestMapping("/carro/insert")
-	public ModelAndView form() {
-		ModelAndView modelAndView = new ModelAndView("carro/form");
-		modelAndView.addObject("carro", new Carro());
-		return modelAndView;
-	}
-	
 	
 }

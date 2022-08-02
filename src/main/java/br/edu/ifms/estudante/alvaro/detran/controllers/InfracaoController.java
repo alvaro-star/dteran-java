@@ -1,37 +1,27 @@
 package br.edu.ifms.estudante.alvaro.detran.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.ifms.estudante.alvaro.detran.models.Infracao;
-import br.edu.ifms.estudante.alvaro.detran.repositorys.Infracoes;
+import br.edu.ifms.estudante.alvaro.detran.models.InfracaoModel;
+import br.edu.ifms.estudante.alvaro.detran.repositories.InfracaoRepository;
 
-@Controller
+@RestController
 public class InfracaoController {
 	@Autowired
-	private Infracoes infracoes;
+	private InfracaoRepository infracaoRepository;
 	
-	@GetMapping("/infracao/infracoes")
-	public ModelAndView lista() {
-		ModelAndView modelAndView = new ModelAndView("infracao/ListaInfracoes");
-		modelAndView.addObject("infracoes", infracoes.findAll());
-		return modelAndView;
+	@GetMapping
+	public List<InfracaoModel> listar() {
+		return infracaoRepository.findAll();
 	}
 	
-	@PostMapping("/infracao/infracoes")
-	public String salvar(Infracao infracao) {
-		this.infracoes.save(infracao);
-		return "redirect:infracao/infracoes";
-	}
-	
-	@RequestMapping("/infracao/insert")
-	public ModelAndView form() {
-		ModelAndView modelAndView = new ModelAndView("infracao/form");
-		modelAndView.addObject("infracao", new Infracao());
-		return modelAndView;
+	@PostMapping
+	public InfracaoModel salvar(InfracaoModel infracaoModel) {
+		return infracaoRepository.save(infracaoModel);
 	}
 }
